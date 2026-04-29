@@ -1,0 +1,37 @@
+cd ~/nagap_loyiha && echo '<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAGAP - Professional Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0f172a; color: white; }
+        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <nav class="p-6 border-b border-slate-800 flex justify-between items-center">
+        <h2 class="text-2xl font-bold gradient-text">NAGAP.UZ</h2>
+        <div class="space-x-6">
+            <a href="#" class="hover:text-sky-400">Asosiy</a>
+            <a href="#" class="hover:text-sky-400">Xizmatlar</a>
+            <a href="#" class="bg-sky-500 px-4 py-2 rounded-lg text-white font-bold">Kirish</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">Kelajak <span class="gradient-text">NAGAP</span> bilan boshlanadi</h1>
+        <p class="text-slate-400 text-xl max-w-2xl mb-8">Bu platforma orqali siz o’z g’oyalaringizni dunyoga ko’rsatishingiz mumkin. Biz hozir poydevorni qurdik!</p>
+        <div class="flex space-x-4">
+            <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition">Boshlash</button>
+            <button class="border border-slate-700 px-8 py-3 rounded-full font-bold hover:bg-slate-800 transition">Bog’lanish</button>
+        </div>
+    </main>
+
+    <footer class="p-8 border-t border-slate-800 text-center text-slate-500">
+        &copy; 2026 NAGAP Loyihasi. Barcha huquqlar himoyalangan.
+    </footer>
+</body>
+</html>' > index.html
+
