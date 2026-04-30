@@ -6,68 +6,47 @@
     <title>Tibbiyot Kitoblari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { 
-            background: #0f172a; 
-            color: white; 
-            font-family: sans-serif;
-            scroll-behavior: smooth;
-        }
-        #loginModal {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 999;
-            align-items: center; justify-content: center;
-        }
-        .gradient-text {
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { background: #0f172a; color: white; font-family: sans-serif; scroll-behavior: smooth; }
+        #authModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 999; align-items: center; justify-content: center; }
+        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tab-active { border-bottom: 3px solid #38bdf8; color: #38bdf8; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
     <nav class="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] sticky top-0 z-50">
         <h2 class="text-2xl font-bold gradient-text">Tibbiyot Kitoblari</h2>
-        <button id="navLoginBtn" onclick="toggleModal()" class="bg-sky-500 px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">
-            Kirish
-        </button>
+        <div id="navAuthSection">
+            <button onclick="openModal('login')" class="text-slate-300 mr-4 font-bold hover:text-white">Kirish</button>
+            <button onclick="openModal('register')" class="bg-sky-500 px-5 py-2 rounded-lg font-bold hover:bg-sky-600 transition">Ro'yxatdan o'tish</button>
+        </div>
     </nav>
 
     <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-            Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz
-        </h1>
-        <p id="heroDescription" class="text-slate-400 text-xl max-w-2xl mb-10">
-            Barcha turdagi tibbiy kitoblarning PDF formatini topishingiz va o'qishingiz mumkin.
-        </p>
-        <button id="mainStartBtn" onclick="toggleModal()" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl transform hover:scale-105">
-            Boshlash
-        </button>
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz</h1>
+        <p id="welcomeMsg" class="text-slate-400 text-xl max-w-2xl mb-10">Kitoblarni o'qish uchun tizimga kiring yoki ro'yxatdan o'ting.</p>
+        <button id="heroBtn" onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl">Boshlash</button>
     </main>
 
-    <div id="loginModal">
+    <div id="authModal">
         <div class="bg-white text-black p-8 rounded-2xl w-full max-w-md shadow-2xl relative mx-4">
-            <button onclick="toggleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl">&times;</button>
-            <h2 class="text-2xl font-bold mb-2 text-center">Ro'yxatdan o'tish</h2>
-            <p class="text-center text-gray-500 mb-6 text-sm">Davom etish uchun ma'lumotlaringizni kiriting</p>
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl">&times;</button>
             
-            <form onsubmit="handleLogin(event)">
-                <div class="mb-4">
+            <div class="flex justify-around mb-8 border-b">
+                <button id="tabLogin" onclick="switchTab('login')" class="pb-2 font-bold transition">Kirish</button>
+                <button id="tabRegister" onclick="switchTab('register')" class="pb-2 font-bold transition">Ro'yxatdan o'tish</button>
+            </div>
+
+            <form onsubmit="handleAuth(event)">
+                <div id="nameField" class="mb-4">
                     <label class="block text-sm font-bold mb-1 text-gray-700">Ism va Familiya</label>
-                    <input type="text" id="userNameInput" required placeholder="Ismingizni kiriting" 
-                        class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none transition">
+                    <input type="text" id="authName" placeholder="Ismingizni kiriting" class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-bold mb-1 text-gray-700">Elektron pochta</label>
-                    <input type="email" id="userEmailInput" required placeholder="Emailingizni kiriting" 
-                        class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none transition">
+                    <input type="email" id="authEmail" required placeholder="Emailingizni kiriting" class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none">
                 </div>
-                <button type="submit" class="w-full bg-sky-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-sky-600 transition shadow-lg">
-                    Davom etish
-                </button>
+                <button type="submit" id="submitBtn" class="w-full bg-sky-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-sky-600 transition shadow-lg">Davom etish</button>
             </form>
         </div>
     </div>
@@ -77,57 +56,71 @@
     </footer>
 
     <script>
-        // Sahifa yuklanganda foydalanuvchini tekshirish
+        let currentMode = 'register';
+
         window.onload = function() {
-            const savedUser = localStorage.getItem('user_name');
-            if (savedUser) {
-                updateUI(savedUser);
-            }
+            const user = localStorage.getItem('user_name');
+            if (user) updateUI(user);
         };
 
-        // Modalni ochish/yopish
-        function toggleModal() {
-            const modal = document.getElementById('loginModal');
-            if (modal.style.display === 'flex') {
-                modal.style.display = 'none';
+        function openModal(mode) {
+            document.getElementById('authModal').style.display = 'flex';
+            switchTab(mode);
+        }
+
+        function closeModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            const nameField = document.getElementById('nameField');
+            const submitBtn = document.getElementById('submitBtn');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+
+            if (mode === 'login') {
+                nameField.style.display = 'none';
+                document.getElementById('authName').required = false;
+                submitBtn.innerText = 'Tizimga kirish';
+                tabLogin.classList.add('tab-active');
+                tabRegister.classList.remove('tab-active');
             } else {
-                modal.style.display = 'flex';
+                nameField.style.display = 'block';
+                document.getElementById('authName').required = true;
+                submitBtn.innerText = 'Ro\'yxatdan o\'tish';
+                tabRegister.classList.add('tab-active');
+                tabLogin.classList.remove('tab-active');
             }
         }
 
-        // Loginni qayta ishlash
-        function handleLogin(event) {
+        function handleAuth(event) {
             event.preventDefault();
-            
-            const name = document.getElementById('userNameInput').value;
-            const email = document.getElementById('userEmailInput').value;
+            const name = document.getElementById('authName').value;
+            const email = document.getElementById('authEmail').value;
 
-            if (name && email) {
-                // Brauzer xotirasiga saqlash
+            if (currentMode === 'register') {
                 localStorage.setItem('user_name', name);
                 localStorage.setItem('user_email', email);
-                
+                alert("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
                 updateUI(name);
-                toggleModal();
+            } else {
+                const savedEmail = localStorage.getItem('user_email');
+                if (email === savedEmail) {
+                    updateUI(localStorage.getItem('user_name'));
+                } else {
+                    alert("Bunday email topilmadi. Avval ro'yxatdan o'ting.");
+                    return;
+                }
             }
+            closeModal();
         }
 
-        // Saytni foydalanuvchi ismiga moslab o'zgartirish
         function updateUI(name) {
-            const navBtn = document.getElementById('navLoginBtn');
-            const mainBtn = document.getElementById('mainStartBtn');
-            const description = document.getElementById('heroDescription');
-
-            // Navigatsiya tugmasini o'zgartirish
-            navBtn.innerText = "👋 " + name;
-            navBtn.onclick = logout; // Ismni bossa chiqish imkoni
-            
-            // Asosiy matnlarni o'zgartirish
-            if(description) description.innerHTML = `Xush kelibsiz, <span class="text-sky-400 font-bold">${name}</span>! <br> Endi kitoblarni o'qishingiz mumkin.`;
-            if(mainBtn) mainBtn.innerText = "Kitoblarni ko'rish";
+            document.getElementById('navAuthSection').innerHTML = `<button onclick="logout()" class="text-sky-400 font-bold">👋 ${name} (Chiqish)</button>`;
+            document.getElementById('welcomeMsg').innerHTML = `Xush kelibsiz, <b>${name}</b>! Kitoblar bo'limi siz uchun ochiq.`;
+            document.getElementById('heroBtn').innerText = 'Kitoblarni ko\'rish';
+            document.getElementById('heroBtn').onclick = function() { alert("Kitoblar sahifasi tayyorlanmoqda..."); };
         }
 
-        // Tizimdan chiqish
         function logout() {
             if(confirm("Tizimdan chiqmoqchimisiz?")) {
                 localStorage.removeItem('user_name');
@@ -136,6 +129,5 @@
             }
         }
     </script>
-
 </body>
 </html>
