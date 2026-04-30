@@ -18,7 +18,7 @@
 
     <nav class="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] sticky top-0 z-50">
         <h2 class="text-2xl font-bold gradient-text">Tibbiyot Kitoblari</h2>
-        <div id="navAuthSection">
+        <div>
             <button onclick="openModal('login')" class="text-slate-300 mr-4 font-bold hover:text-white">Kirish</button>
             <button onclick="openModal('register')" class="bg-sky-500 px-5 py-2 rounded-lg font-bold hover:bg-sky-600 transition shadow-lg">Ro'yxatdan o'tish</button>
         </div>
@@ -27,7 +27,7 @@
     <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz</h1>
         <p class="text-slate-400 text-xl max-w-2xl mb-10">Barcha qurilmalardan shaxsiy profilingiz orqali xavfsiz kiring.</p>
-        <button onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-2xl transform hover:scale-105">Boshlash</button>
+        <button onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-2xl transform hover:scale-105">Hoziroq boshlash</button>
     </main>
 
     <div id="authModal">
@@ -49,20 +49,16 @@
                     <input type="email" id="authEmail" required placeholder="Emailingizni kiriting" class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-bold mb-1 text-gray-700">Shaxsiy parol (Kod)</label>
-                    <input type="password" id="authPass" required placeholder="Maxfiy kodingizni kiriting" class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none">
+                    <label class="block text-sm font-bold mb-1 text-gray-700">Maxfiy parol (Kod)</label>
+                    <input type="password" id="authPass" required placeholder="Parolingizni kiriting" class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none">
                 </div>
                 <button type="submit" id="submitBtn" class="w-full bg-sky-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-sky-600 transition shadow-lg">Davom etish</button>
             </form>
         </div>
     </div>
 
-    <footer class="p-8 border-t border-slate-800 text-center text-slate-500">
-        <p>&copy; 2026 Instut Kitoblari. Barcha huquqlar himoyalangan.</p>
-    </footer>
-
     <script>
-        // Firebase Konfiguratsiyasi (Rasm 1000053010.jpg asosida)
+        // FIREBASE SOZLAMALARI (Rasm 1000053014.jpg asosida)
         const firebaseConfig = {
             apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
             authDomain: "tibbiyot-52bbe.firebaseapp.com",
@@ -71,14 +67,14 @@
             messagingSenderId: "862570235406",
             appId: "1:862570235406:web:9f80848e59de858790de5f",
             measurementId: "G-EBXD14ZUXC",
-            databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
+            databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com" // MA'LUMOTLAR BAZASI MANZILI
         };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let currentMode = 'register';
 
-        // Avval kirgan bo'lsa, avtomatik books sahifasiga
+        // Avval kirgan bo'lsa, to'g'ri kitoblar sahifasiga o'tadi
         window.onload = function() {
             if (localStorage.getItem('user_name')) {
                 window.location.href = 'books.html';
@@ -96,27 +92,27 @@
             currentMode = mode;
             document.getElementById('nameField').style.display = mode === 'login' ? 'none' : 'block';
             document.getElementById('authName').required = (mode === 'register');
-            document.getElementById('tabLogin').className = mode === 'login' ? 'pb-2 font-bold tab-active' : 'pb-2 font-bold text-gray-400';
-            document.getElementById('tabRegister').className = mode === 'register' ? 'pb-2 font-bold tab-active' : 'pb-2 font-bold text-gray-400';
+            document.getElementById('tabLogin').className = mode === 'login' ? 'pb-2 font-bold tab-active text-sky-500' : 'pb-2 font-bold text-gray-400';
+            document.getElementById('tabRegister').className = mode === 'register' ? 'pb-2 font-bold tab-active text-sky-500' : 'pb-2 font-bold text-gray-400';
             document.getElementById('submitBtn').innerText = mode === 'login' ? 'Tizimga kirish' : 'Ro\'yxatdan o\'tish';
         }
 
         function handleAuth(event) {
             event.preventDefault();
-            const email = document.getElementById('authEmail').value.replace(/\./g, ','); // Firebase nuqtani yoqtirmaydi
+            const email = document.getElementById('authEmail').value.replace(/\./g, ','); // Firebase nuqtani qabul qilmaydi
             const pass = document.getElementById('authPass').value;
             const name = document.getElementById('authName').value;
 
             if (currentMode === 'register') {
-                // Ma'lumotlarni internetdagi bazaga yozish
+                // Ma'lumotlarni Firebase'ga saqlash
                 db.ref('users/' + email).set({
                     username: name,
                     password: pass
                 }).then(() => {
                     localStorage.setItem('user_name', name);
-                    alert("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
+                    alert("Ro'yxatdan o'tish muvaffaqiyatli!");
                     window.location.href = 'books.html';
-                }).catch(err => alert("Xatolik: " + err.message));
+                }).catch(err => alert("Xatolik yuz berdi: " + err.message));
             } else {
                 // Bazadan parolni tekshirish
                 db.ref('users/' + email).once('value').then((snapshot) => {
@@ -127,7 +123,7 @@
                     } else {
                         alert("Email yoki parol noto'g'ri!");
                     }
-                });
+                }).catch(err => alert("Xatolik: " + err.message));
             }
         }
     </script>
