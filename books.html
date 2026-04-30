@@ -3,43 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitoblar Olami - Tibbiyot</title>
+    <title>Kitoblar Ro'yxati</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
-<body class="bg-[#0f172a] text-white min-h-screen">
-    <nav class="p-6 border-b border-slate-800 flex justify-between items-center bg-[#1e293b]">
-        <h2 class="text-2xl font-bold text-sky-400">Tibbiyot Kutubxonasi</h2>
-        <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded-lg text-sm font-bold">Chiqish</button>
-    </nav>
-
-    <div class="p-8">
-        <h1 class="text-3xl font-bold mb-6">Mavjud kitoblar</h1>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 transition">
-                <div class="h-40 bg-slate-700 rounded-lg mb-4 flex items-center justify-center">📚</div>
-                <h3 class="text-xl font-bold mb-2">Anatomiya asoslari</h3>
-                <p class="text-slate-400 text-sm mb-4">Inson tanasi tuzilishi haqida to'liq qo'llanma.</p>
-                <button class="w-full bg-sky-500 py-2 rounded-lg font-bold">O'qish (PDF)</button>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 transition">
-                <div class="h-40 bg-slate-700 rounded-lg mb-4 flex items-center justify-center">🔬</div>
-                <h3 class="text-xl font-bold mb-2">Mikrobiologiya</h3>
-                <p class="text-slate-400 text-sm mb-4">Mikroorganizmlar va ularning hayoti haqida.</p>
-                <button class="w-full bg-sky-500 py-2 rounded-lg font-bold">O'qish (PDF)</button>
-            </div>
+<body class="bg-[#0f172a] text-white p-6">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center text-sky-400">Tibbiyot Kutubxonasi</h1>
+        
+        <div id="bookList" class="space-y-4">
+            <p class="text-center text-slate-500">Kitoblar yuklanmoqda...</p>
         </div>
     </div>
 
     <script>
-        // Agar foydalanuvchi tizimga kirmagan bo'lsa, uni haydab chiqaramiz
-        if (!localStorage.getItem('user_name')) {
-            window.location.href = 'index.html';
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
+            authDomain: "tibbiyot-52bbe.firebaseapp.com",
+            projectId: "tibbiyot-52bbe",
+            databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
+        const bookList = document.getElementById('bookList');
+
+        // Bazadan kitoblarni o'qish
+        firebase.database().ref('library').on('value', (snapshot) => {
+            const data = snapshot.val();
+            bookList.innerHTML = '';
+
+            if(!data) {
+                bookList.innerHTML = '<p class="text-center text-slate-400">Hozircha kitoblar yo'q.</p>';
+                return;
+            }
+
+            for(let id in data) {
+                const book = data[id];
+                bookList.innerHTML += `
+                    <div class="bg-slate-800 p-5 rounded-2xl flex justify-between items-center border border-slate-700 shadow-xl">
+                        <div>
+                            <h3 class="text-xl font-bold">${book.title}</h3>
+                            <p class="text-slate-400 text-sm">Hajmi: 200MB+ | PDF</p>
+                        </div>
+                        <a href="${book.fileUrl}" target="_blank" class="bg-sky-500 hover:bg-sky-600 px-6 py-2 rounded-xl font-bold transition shadow-lg">O'qish</a>
+                    </div>
+                `;
+            }
+        });
     </script>
 </body>
 </html>
