@@ -25,7 +25,7 @@
     <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz</h1>
         <p id="welcomeMsg" class="text-slate-400 text-xl max-w-2xl mb-10">Kitoblarni o'qish uchun tizimga kiring yoki ro'yxatdan o'ting.</p>
-        <button id="heroBtn" onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl">Boshlash</button>
+        <button id="heroBtn" onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl transform hover:scale-105">Boshlash</button>
     </main>
 
     <div id="authModal">
@@ -34,7 +34,7 @@
             
             <div class="flex justify-around mb-8 border-b">
                 <button id="tabLogin" onclick="switchTab('login')" class="pb-2 font-bold transition">Kirish</button>
-                <button id="tabRegister" onclick="switchTab('register')" class="pb-2 font-bold transition">Ro'yxatdan o'tish</button>
+                <button id="tabRegister" onclick="switchTab('register')" class="pb-2 font-bold transition tab-active">Ro'yxatdan o'tish</button>
             </div>
 
             <form onsubmit="handleAuth(event)">
@@ -58,9 +58,11 @@
     <script>
         let currentMode = 'register';
 
+        // Sahifa yuklanganda foydalanuvchi allaqachon kirgan bo'lsa, books.html ga o'tkazish
         window.onload = function() {
-            const user = localStorage.getItem('user_name');
-            if (user) updateUI(user);
+            if (localStorage.getItem('user_name')) {
+                window.location.href = 'books.html';
+            }
         };
 
         function openModal(mode) {
@@ -100,32 +102,15 @@
             if (currentMode === 'register') {
                 localStorage.setItem('user_name', name);
                 localStorage.setItem('user_email', email);
-                alert("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
-                updateUI(name);
+                alert("Ro'yxatdan o'tish muvaffaqiyatli! Kitoblar bo'limiga o'tasiz.");
+                window.location.href = 'books.html';
             } else {
                 const savedEmail = localStorage.getItem('user_email');
                 if (email === savedEmail) {
-                    updateUI(localStorage.getItem('user_name'));
+                    window.location.href = 'books.html';
                 } else {
-                    alert("Bunday email topilmadi. Avval ro'yxatdan o'ting.");
-                    return;
+                    alert("Email xato yoki siz hali ro'yxatdan o'tmagansiz!");
                 }
-            }
-            closeModal();
-        }
-
-        function updateUI(name) {
-            document.getElementById('navAuthSection').innerHTML = `<button onclick="logout()" class="text-sky-400 font-bold">👋 ${name} (Chiqish)</button>`;
-            document.getElementById('welcomeMsg').innerHTML = `Xush kelibsiz, <b>${name}</b>! Kitoblar bo'limi siz uchun ochiq.`;
-            document.getElementById('heroBtn').innerText = 'Kitoblarni ko\'rish';
-            document.getElementById('heroBtn').onclick = function() { alert("Kitoblar sahifasi tayyorlanmoqda..."); };
-        }
-
-        function logout() {
-            if(confirm("Tizimdan chiqmoqchimisiz?")) {
-                localStorage.removeItem('user_name');
-                localStorage.removeItem('user_email');
-                window.location.reload();
             }
         }
     </script>
