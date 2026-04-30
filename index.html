@@ -3,71 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>instut kitoblari </title>
-<meta name="description" content="Instut kitoblari.Omonov Komiljon.">
-<meta name="keywords" content="Instut kitoblari, Komiljon Omonov, dasturlash">
-
+    <title>Tibbiyot Kitoblari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f172a; color: white; }
-        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { background: #0f172a; color: white; scroll-behavior: smooth; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+
     <nav class="p-6 border-b border-slate-800 flex justify-between items-center">
-        <h2 class="text-2xl font-bold gradient-text">Tibbiyot kitoblari</h2>
+        <h2 class="text-2xl font-bold">Tibbiyot Kitoblari</h2>
         <div class="hidden md:flex space-x-6 items-center">
             <a href="#" class="hover:text-sky-400">Asosiy</a>
-            <a href="#" class="hover:text-sky-400">Xizmatlar</a>
-            <a href="#" class="hover:text-sky-400">Kitoblar</a>
-            <a href="#" class="bg-sky-500 px-4 py-2 rounded-lg text-white font-bold hover:bg-sky-600 transition">Kirish</a>
+            <a href="#registration" class="bg-sky-500 px-4 py-2 rounded-lg font-bold hover:bg-sky-600 transition">Kirish</a>
         </div>
-        <div class="flex md:hidden items-center space-x-2">
-            <a href="#" class="bg-sky-500 px-3 py-1 rounded text-sm text-white">Kirish</a>
+        <div class="md:hidden">
+            <a href="#registration" class="bg-sky-500 px-3 py-1 rounded text-sm text-white">Kirish</a>
         </div>
     </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-4">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">Tibbiyot <span class="gradient-text">olamiga</span> xush kelibsiz</h1>
-        <p class="text-slate-400 text-xl max-w-2xl mb-8">Bu yerda tibbiyotga oid kitoblarni pdfni topsangiz buladi</p>
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">Tibbiyot olamiga <span class="text-sky-500">xush kelibsiz</span></h1>
+        <p class="text-slate-400 text-xl max-w-2xl mb-8">Bu yerda tibbiyotga oid eng sara kitoblarni topishingiz mumkin.</p>
         <div class="flex space-x-4">
-            <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition">Boshlash</button>
-            <button class="border border-slate-700 px-8 py-3 rounded-full font-bold hover:bg-slate-800 transition">Bog’lanish</button>
+            <a href="#registration" class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition">Boshlash</a>
         </div>
     </main>
 
-    <footer class="p-8 border-t border-slate-800 text-center text-slate-500">
-        &copy; Instut kitoblari. Barcha huquqlar himoyalangan.
-    </footer>
+    <section id="registration" style="padding: 80px 20px; background-color: #1e293b; text-align: center;">
+        <h2 class="text-3xl font-bold mb-4">Ro'yxatdan o'tish</h2>
+        <p class="mb-8 text-slate-400">Tizimga kirish uchun ma'lumotlaringizni kiriting:</p>
+        
+        <form action="#" style="display: inline-block; text-align: left; background: #334155; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px;">
+            <label>Ism va Familiya:</label><br>
+            <input type="text" placeholder="Ismingizni yozing" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; color: black;"><br>
+            
+            <label>Elektron pochta:</label><br>
+            <input type="email" placeholder="Emailingizni yozing" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; color: black;"><br>
+            
+            <button type="submit" style="background-color: #0ea5e9; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px;">
+                Yuborish
+            </button>
+        </form>
+    </section>
 
-    <script type="text/javascript">
-    var sc_project=13224933; 
-    var sc_invisible=1; 
-    var sc_security="5f8cc39e"; 
-    </script>
-    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
-    <noscript><div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img class="statcounter" src="https://c.statcounter.com/13224933/0/5f8cc39e/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-    <a href="https://statcounter.com/p13224933/?guest=1">View My Stats</a>
+    <footer class="p-8 border-t border-slate-800 text-center text-slate-500">
+        &copy; 2024 Tibbiyot Kitoblari. Barcha huquqlar himoyalangan.
+    </footer>
 
 </body>
 </html>
-<section id="registration" style="padding: 50px; background-color: #f4f4f4; text-align: center;">
-    <h2>Ro'yxatdan o'tish</h2>
-    <p>Tibbiyot olamiga kirish uchun ma'lumotlaringizni qoldiring:</p>
-    
-    <form style="display: inline-block; text-align: left; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <label>Ism va Familiya:</label><br>
-        <input type="text" placeholder="Ismingizni yozing" style="width: 100%; padding: 10px; margin: 10px 0;"><br>
-        
-        <label>Elektron pochta:</label><br>
-        <input type="email" placeholder="Emailingizni yozing" style="width: 100%; padding: 10px; margin: 10px 0;"><br>
-        
-        <label>Parol:</label><br>
-        <input type="password" placeholder="Parol yarating" style="width: 100%; padding: 10px; margin: 10px 0;"><br>
-        
-        <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
-            Ro'yxatdan o'tish
-        </button>
-    </form>
-</section>
-
