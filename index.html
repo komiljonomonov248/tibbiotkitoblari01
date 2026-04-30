@@ -13,54 +13,70 @@
 
     <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-sky-400">Xush kelibsiz</h1>
-            <p class="text-slate-400 mt-2">Kutubxonadan foydalanish uchun tizimga kiring</p>
+            <h1 id="authTitle" class="text-3xl font-extrabold text-sky-400">Kirish</h1>
+            <p id="authDesc" class="text-slate-400 mt-2">Kutubxonaga kirish uchun ma'lumotlarni kiriting</p>
         </div>
 
         <div class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium mb-1 ml-1 text-slate-300">Email manzilingiz</label>
-                <input type="email" id="email" placeholder="misol@mail.com" 
-                       class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl focus:border-sky-500 outline-none transition">
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1 ml-1 text-slate-300">Parolingiz</label>
-                <input type="password" id="password" placeholder="••••••••" 
-                       class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl focus:border-sky-500 outline-none transition">
-            </div>
+            <input type="email" id="email" placeholder="Email manzilingiz" 
+                   class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl focus:border-sky-500 outline-none transition text-white">
             
-            <div class="flex gap-4 pt-4">
-                <button onclick="login()" id="loginBtn" 
-                        class="flex-1 bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-xl font-bold transition active:scale-95">
-                    Kirish
-                </button>
-                <button onclick="register()" id="regBtn" 
-                        class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-bold transition active:scale-95">
-                    Ro'yxatdan o'tish
-                </button>
-            </div>
+            <input type="password" id="password" placeholder="Parolingiz" 
+                   class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl focus:border-sky-500 outline-none transition text-white">
+            
+            <button onclick="handleAuth()" id="mainBtn" 
+                    class="w-full bg-sky-600 hover:bg-sky-700 text-white py-4 rounded-xl font-bold transition active:scale-95 shadow-lg shadow-sky-500/20">
+                Tizimga kirish
+            </button>
+
+            <p class="text-center text-sm text-slate-400 mt-4">
+                <span id="toggleText">Akkuntingiz yo'qmi?</span> 
+                <button onclick="toggleAuth()" id="toggleBtn" class="text-sky-400 font-bold hover:underline ml-1">Ro'yxatdan o'tish</button>
+            </p>
         </div>
 
-        <div class="mt-8 text-center">
-            <a href="admin.html" class="text-slate-500 text-sm hover:text-sky-400 transition italic">Admin panelga o'tish</a>
+        <div class="mt-8 text-center border-t border-slate-700 pt-4">
+            <a href="admin.html" class="text-slate-500 text-xs hover:text-sky-400 transition italic underline">Admin panelga o'tish</a>
         </div>
     </div>
 
     <script>
-        // FIREBASE SOZLAMALARI
         const firebaseConfig = {
             apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
             authDomain: "tibbiyot-52bbe.firebaseapp.com",
             projectId: "tibbiyot-52bbe",
             databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
         };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+
+        let isLoginMode = true; // Hozir qaysi bo'limdaligini belgilaydi
+
+        // BO'LIMLARNI ALMASHTIRISH (KIRISH <-> RO'YXATDAN O'TISH)
+        function toggleAuth() {
+            isLoginMode = !isLoginMode;
+            const title = document.getElementById('authTitle');
+            const desc = document.getElementById('authDesc');
+            const mainBtn = document.getElementById('mainBtn');
+            const toggleText = document.getElementById('toggleText');
+            const toggleBtn = document.getElementById('toggleBtn');
+
+            if (isLoginMode) {
+                title.innerText = "Kirish";
+                desc.innerText = "Kutubxonaga kirish uchun ma'lumotlarni kiriting";
+                mainBtn.innerText = "Tizimga kirish";
+                toggleText.innerText = "Akkuntingiz yo'qmi?";
+                toggleBtn.innerText = "Ro'yxatdan o'tish";
+            } else {
+                title.innerText = "Ro'yxatdan o'tish";
+                desc.innerText = "Yangi profil yaratish uchun ma'lumotlarni kiriting";
+                mainBtn.innerText = "Ro'yxatdan o'tish";
+                toggleText.innerText = "Akkuntingiz bormi?";
+                toggleBtn.innerText = "Tizimga kirish";
+            }
         }
 
-        // KIRISH FUNKSIYASI
-        function login() {
+        // ASOSIY FUNKSIYA
+        function handleAuth() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -69,54 +85,28 @@
                 return;
             }
 
-            firebase.auth().signInWithEmailAndPassword(email, password)
+            if (isLoginMode) {
+                // KIRISH QISMI
+                firebase.auth().signInWithEmailAndPassword(email, password)
                 .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Muvaffaqiyatli!',
-                        text: 'Tizimga kirdingiz',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        background: '#1e293b',
-                        color: '#fff'
-                    }).then(() => {
-                        window.location.href = "books.html";
-                    });
+                    Swal.fire({ icon: 'success', title: 'Xush kelibsiz!', showConfirmButton: false, timer: 1500, background: '#1e293b', color: '#fff' })
+                    .then(() => window.location.href = "books.html");
                 })
-                .catch((error) => {
-                    Swal.fire({ icon: 'error', title: 'Xatolik!', text: "Email yoki parol noto'g'ri", background: '#1e293b', color: '#fff' });
-                });
-        }
-
-        // RO'YXATDAN O'TISH FUNKSIYASI
-        function register() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            if(!email || !password) {
-                Swal.fire({ icon: 'warning', title: 'Diqqat!', text: 'Ma’lumotlarni to‘ldiring', background: '#1e293b', color: '#fff' });
-                return;
-            }
-
-            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .catch(err => Swal.fire({ icon: 'error', title: 'Xato!', text: "Email yoki parol noto'g'ri!", background: '#1e293b', color: '#fff' }));
+            } else {
+                // RO'YXATDAN O'TISH QISMI
+                firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Tabriklaymiz!',
-                        text: 'Siz muvaffaqiyatli ro‘yxatdan o‘tdingiz',
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'Tabriklaymiz!', 
+                        text: 'Profil yaratildi!', 
                         confirmButtonText: 'Kutubxonaga kirish',
-                        confirmButtonColor: '#0ea5e9',
-                        background: '#1e293b',
-                        color: '#fff'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "books.html";
-                        }
-                    });
+                        background: '#1e293b', color: '#fff' 
+                    }).then(() => window.location.href = "books.html");
                 })
-                .catch((error) => {
-                    Swal.fire({ icon: 'error', title: 'Xato!', text: "Email allaqachon mavjud yoki parol juda qisqa", background: '#1e293b', color: '#fff' });
-                });
+                .catch(err => Swal.fire({ icon: 'error', title: 'Xato!', text: "Xatolik yuz berdi yoki email band!", background: '#1e293b', color: '#fff' }));
+            }
         }
     </script>
 </body>
