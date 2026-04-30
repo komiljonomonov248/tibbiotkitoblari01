@@ -3,50 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitoblar Ro'yxati</title>
+    <title>Tibbiyot Kutubxonasi - Kitoblar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
-<body class="bg-[#0f172a] text-white p-6">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-center text-sky-400">Tibbiyot Kutubxonasi</h1>
+<body class="bg-[#0f172a] text-white min-h-screen p-4">
+
+    <div class="max-w-2xl mx-auto pt-10">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-extrabold text-sky-400 tracking-tight">Kutubxona</h1>
+            <a href="index.html" class="bg-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-600 transition">Chiqish</a>
+        </div>
         
-        <div id="bookList" class="space-y-4">
-            <p class="text-center text-slate-500">Kitoblar yuklanmoqda...</p>
+        <div id="bookList" class="space-y-6">
+            <div class="flex justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>
+                <p class="ml-4 text-slate-400 mt-3">Kitoblar yuklanmoqda...</p>
+            </div>
         </div>
     </div>
 
     <script>
+        // SIZNING FIREBASE SOZLAMALARINGIZ
         const firebaseConfig = {
             apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
             authDomain: "tibbiyot-52bbe.firebaseapp.com",
             projectId: "tibbiyot-52bbe",
             databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
         };
+        
         firebase.initializeApp(firebaseConfig);
+        const bookListDiv = document.getElementById('bookList');
 
-        const bookList = document.getElementById('bookList');
-
-        // Bazadan kitoblarni o'qish
+        // Bazadan kitoblarni jonli (real-time) o'qish
         firebase.database().ref('library').on('value', (snapshot) => {
             const data = snapshot.val();
-            bookList.innerHTML = '';
+            bookListDiv.innerHTML = ''; // Ekranni tozalash
 
             if(!data) {
-                bookList.innerHTML = '<p class="text-center text-slate-400">Hozircha kitoblar yo'q.</p>';
+                bookListDiv.innerHTML = `
+                    <div class="text-center py-20 bg-slate-800/50 rounded-3xl border border-dashed border-slate-700">
+                        <p class="text-slate-400">Hozircha kitoblar mavjud emas.</p>
+                    </div>`;
                 return;
             }
 
+            // Har bir kitobni ekranga chiqarish
             for(let id in data) {
                 const book = data[id];
-                bookList.innerHTML += `
-                    <div class="bg-slate-800 p-5 rounded-2xl flex justify-between items-center border border-slate-700 shadow-xl">
-                        <div>
-                            <h3 class="text-xl font-bold">${book.title}</h3>
-                            <p class="text-slate-400 text-sm">Hajmi: 200MB+ | PDF</p>
+                bookListDiv.innerHTML += `
+                    <div class="bg-slate-800/80 backdrop-blur-sm p-6 rounded-3xl flex justify-between items-center border border-slate-700 hover:border-sky-500/50 transition-all shadow-xl group">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-sky-500/10 p-3 rounded-2xl group-hover:bg-sky-500/20 transition">
+                                📚
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white group-hover:text-sky-400 transition">${book.title}</h3>
+                                <p class="text-slate-500 text-xs mt-1">Sana: ${book.date || 'Yaqinda'}</p>
+                            </div>
                         </div>
-                        <a href="${book.fileUrl}" target="_blank" class="bg-sky-500 hover:bg-sky-600 px-6 py-2 rounded-xl font-bold transition shadow-lg">O'qish</a>
+                        <a href="${book.fileUrl}" target="_blank" 
+                           class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-2xl font-bold transition shadow-lg shadow-sky-500/20">
+                            O'qish
+                        </a>
                     </div>
                 `;
             }
