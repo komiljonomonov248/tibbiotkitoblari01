@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tibbiyot Kitoblari</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; scroll-behavior: smooth; }
+        body { background: #0f172a; color: white; font-family: sans-serif; }
         #authModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 999; align-items: center; justify-content: center; }
         .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .tab-active { border-bottom: 3px solid #38bdf8; color: #38bdf8; }
+        .tab-active { border-bottom: 4px solid #38bdf8; color: #38bdf8; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -18,14 +20,14 @@
         <h2 class="text-2xl font-bold gradient-text">Tibbiyot Kitoblari</h2>
         <div id="navAuthSection">
             <button onclick="openModal('login')" class="text-slate-300 mr-4 font-bold hover:text-white">Kirish</button>
-            <button onclick="openModal('register')" class="bg-sky-500 px-5 py-2 rounded-lg font-bold hover:bg-sky-600 transition">Ro'yxatdan o'tish</button>
+            <button onclick="openModal('register')" class="bg-sky-500 px-5 py-2 rounded-lg font-bold hover:bg-sky-600 transition shadow-lg">Ro'yxatdan o'tish</button>
         </div>
     </nav>
 
     <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz</h1>
-        <p id="welcomeMsg" class="text-slate-400 text-xl max-w-2xl mb-10">Shaxsiy parolingiz orqali xavfsiz kiring.</p>
-        <button id="heroBtn" onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl">Boshlash</button>
+        <p class="text-slate-400 text-xl max-w-2xl mb-10">Barcha qurilmalardan shaxsiy profilingiz orqali xavfsiz kiring.</p>
+        <button onclick="openModal('register')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-2xl transform hover:scale-105">Boshlash</button>
     </main>
 
     <div id="authModal">
@@ -60,8 +62,23 @@
     </footer>
 
     <script>
+        // Firebase Konfiguratsiyasi (Rasm 1000053010.jpg asosida)
+        const firebaseConfig = {
+            apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
+            authDomain: "tibbiyot-52bbe.firebaseapp.com",
+            projectId: "tibbiyot-52bbe",
+            storageBucket: "tibbiyot-52bbe.appspot.com",
+            messagingSenderId: "862570235406",
+            appId: "1:862570235406:web:9f80848e59de858790de5f",
+            measurementId: "G-EBXD14ZUXC",
+            databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
         let currentMode = 'register';
 
+        // Avval kirgan bo'lsa, avtomatik books sahifasiga
         window.onload = function() {
             if (localStorage.getItem('user_name')) {
                 window.location.href = 'books.html';
@@ -77,51 +94,40 @@
 
         function switchTab(mode) {
             currentMode = mode;
-            const nameField = document.getElementById('nameField');
-            const submitBtn = document.getElementById('submitBtn');
-            const tabLogin = document.getElementById('tabLogin');
-            const tabRegister = document.getElementById('tabRegister');
-
-            if (mode === 'login') {
-                nameField.style.display = 'none';
-                document.getElementById('authName').required = false;
-                submitBtn.innerText = 'Tizimga kirish';
-                tabLogin.classList.add('tab-active');
-                tabRegister.classList.remove('tab-active');
-            } else {
-                nameField.style.display = 'block';
-                document.getElementById('authName').required = true;
-                submitBtn.innerText = 'Ro\'yxatdan o\'tish';
-                tabRegister.classList.add('tab-active');
-                tabLogin.classList.remove('tab-active');
-            }
+            document.getElementById('nameField').style.display = mode === 'login' ? 'none' : 'block';
+            document.getElementById('authName').required = (mode === 'register');
+            document.getElementById('tabLogin').className = mode === 'login' ? 'pb-2 font-bold tab-active' : 'pb-2 font-bold text-gray-400';
+            document.getElementById('tabRegister').className = mode === 'register' ? 'pb-2 font-bold tab-active' : 'pb-2 font-bold text-gray-400';
+            document.getElementById('submitBtn').innerText = mode === 'login' ? 'Tizimga kirish' : 'Ro\'yxatdan o\'tish';
         }
 
         function handleAuth(event) {
             event.preventDefault();
-            const name = document.getElementById('authName').value;
-            const email = document.getElementById('authEmail').value;
+            const email = document.getElementById('authEmail').value.replace(/\./g, ','); // Firebase nuqtani yoqtirmaydi
             const pass = document.getElementById('authPass').value;
+            const name = document.getElementById('authName').value;
 
             if (currentMode === 'register') {
-                // Ma'lumotlarni saqlash (parol bilan birga)
-                localStorage.setItem('user_name', name);
-                localStorage.setItem('user_email', email);
-                localStorage.setItem('user_pass', pass);
-                alert("Ro'yxatdan muvaffaqiyatli o'tdingiz! Parolingizni unutmang.");
-                window.location.href = 'books.html';
-            } else {
-                const savedEmail = localStorage.getItem('user_email');
-                const savedPass = localStorage.getItem('user_pass');
-
-                // Ham emailni, ham parolni tekshirish
-                if (email === savedEmail && pass === savedPass) {
+                // Ma'lumotlarni internetdagi bazaga yozish
+                db.ref('users/' + email).set({
+                    username: name,
+                    password: pass
+                }).then(() => {
+                    localStorage.setItem('user_name', name);
+                    alert("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
                     window.location.href = 'books.html';
-                } else if (email !== savedEmail) {
-                    alert("Email topilmadi!");
-                } else {
-                    alert("Parol noto'g'ri! Qayta urinib ko'ring.");
-                }
+                }).catch(err => alert("Xatolik: " + err.message));
+            } else {
+                // Bazadan parolni tekshirish
+                db.ref('users/' + email).once('value').then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData && userData.password === pass) {
+                        localStorage.setItem('user_name', userData.username);
+                        window.location.href = 'books.html';
+                    } else {
+                        alert("Email yoki parol noto'g'ri!");
+                    }
+                });
             }
         }
     </script>
