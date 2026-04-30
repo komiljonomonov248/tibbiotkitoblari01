@@ -3,35 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tibbiyot Kitoblari - Asosiy Sahifa</title>
+    <title>Tibbiyot Kitoblari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f172a; color: white; scroll-behavior: smooth; }
-        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { 
+            background: #0f172a; 
+            color: white; 
+            font-family: sans-serif;
+            scroll-behavior: smooth;
+        }
+        #loginModal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            align-items: center; justify-content: center;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+
     <nav class="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0f172a] sticky top-0 z-50">
         <h2 class="text-2xl font-bold gradient-text">Tibbiyot Kitoblari</h2>
-        <a href="login.html" class="bg-sky-500 px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">Kirish</a>
+        <button id="navLoginBtn" onclick="toggleModal()" class="bg-sky-500 px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">
+            Kirish
+        </button>
     </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-6 py-20">
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
             Tibbiyot <span class="gradient-text">olamiga</span> <br> xush kelibsiz
         </h1>
-        <p class="text-slate-400 text-lg md:text-xl max-w-2xl mb-10">
-            Barcha turdagi tibbiy kitoblarning PDF formatini topishingiz mumkin.
+        <p id="heroDescription" class="text-slate-400 text-xl max-w-2xl mb-10">
+            Barcha turdagi tibbiy kitoblarning PDF formatini topishingiz va o'qishingiz mumkin.
         </p>
-        <div class="flex space-x-4">
-            <a href="login.html" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition transform hover:scale-105 shadow-xl">
-                Boshlash
-            </a>
-        </div>
+        <button id="mainStartBtn" onclick="toggleModal()" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-xl transform hover:scale-105">
+            Boshlash
+        </button>
     </main>
+
+    <div id="loginModal">
+        <div class="bg-white text-black p-8 rounded-2xl w-full max-w-md shadow-2xl relative mx-4">
+            <button onclick="toggleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-2 text-center">Ro'yxatdan o'tish</h2>
+            <p class="text-center text-gray-500 mb-6 text-sm">Davom etish uchun ma'lumotlaringizni kiriting</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-1 text-gray-700">Ism va Familiya</label>
+                    <input type="text" id="userNameInput" required placeholder="Ismingizni kiriting" 
+                        class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none transition">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-1 text-gray-700">Elektron pochta</label>
+                    <input type="email" id="userEmailInput" required placeholder="Emailingizni kiriting" 
+                        class="w-full border-2 border-gray-100 p-3 rounded-xl focus:border-sky-500 focus:outline-none transition">
+                </div>
+                <button type="submit" class="w-full bg-sky-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-sky-600 transition shadow-lg">
+                    Davom etish
+                </button>
+            </form>
+        </div>
+    </div>
 
     <footer class="p-8 border-t border-slate-800 text-center text-slate-500">
         <p>&copy; 2026 Instut Kitoblari. Barcha huquqlar himoyalangan.</p>
     </footer>
+
+    <script>
+        // Sahifa yuklanganda foydalanuvchini tekshirish
+        window.onload = function() {
+            const savedUser = localStorage.getItem('user_name');
+            if (savedUser) {
+                updateUI(savedUser);
+            }
+        };
+
+        // Modalni ochish/yopish
+        function toggleModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+            }
+        }
+
+        // Loginni qayta ishlash
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('userNameInput').value;
+            const email = document.getElementById('userEmailInput').value;
+
+            if (name && email) {
+                // Brauzer xotirasiga saqlash
+                localStorage.setItem('user_name', name);
+                localStorage.setItem('user_email', email);
+                
+                updateUI(name);
+                toggleModal();
+            }
+        }
+
+        // Saytni foydalanuvchi ismiga moslab o'zgartirish
+        function updateUI(name) {
+            const navBtn = document.getElementById('navLoginBtn');
+            const mainBtn = document.getElementById('mainStartBtn');
+            const description = document.getElementById('heroDescription');
+
+            // Navigatsiya tugmasini o'zgartirish
+            navBtn.innerText = "👋 " + name;
+            navBtn.onclick = logout; // Ismni bossa chiqish imkoni
+            
+            // Asosiy matnlarni o'zgartirish
+            if(description) description.innerHTML = `Xush kelibsiz, <span class="text-sky-400 font-bold">${name}</span>! <br> Endi kitoblarni o'qishingiz mumkin.`;
+            if(mainBtn) mainBtn.innerText = "Kitoblarni ko'rish";
+        }
+
+        // Tizimdan chiqish
+        function logout() {
+            if(confirm("Tizimdan chiqmoqchimisiz?")) {
+                localStorage.removeItem('user_name');
+                localStorage.removeItem('user_email');
+                window.location.reload();
+            }
+        }
+    </script>
+
 </body>
 </html>
