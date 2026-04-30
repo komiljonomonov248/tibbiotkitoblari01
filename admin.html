@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Kitob Linkini Qo'shish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body class="bg-slate-900 text-white p-10 flex flex-col items-center">
+
+    <div class="bg-white text-black p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center text-slate-800">Kitob Qo'shish (Link orqali)</h2>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-bold mb-1">Kitobning nomi</label>
+            <input type="text" id="bookTitle" placeholder="Masalan: Anatomiya" class="w-full border-2 p-3 rounded-xl outline-none">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-bold mb-1">Google Drive yoki Telegram linki</label>
+            <input type="url" id="bookUrl" placeholder="https://drive.google.com/..." class="w-full border-2 p-3 rounded-xl outline-none">
+        </div>
+
+        <button onclick="saveToDatabase()" id="saveBtn" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition">Bazaga saqlash</button>
+        <p id="statusText" class="mt-4 text-center text-green-600 font-bold"></p>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyClT6pzoVoSSqSuqMHhxsh0gEAyEET-qw",
+            authDomain: "tibbiyot-52bbe.firebaseapp.com",
+            projectId: "tibbiyot-52bbe",
+            databaseURL: "https://tibbiyot-52bbe-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function saveToDatabase() {
+            const title = document.getElementById('bookTitle').value;
+            const url = document.getElementById('bookUrl').value;
+            const status = document.getElementById('statusText');
+
+            if (!title || !url) {
+                alert("Iltimos, ism va linkni to'ldiring!");
+                return;
+            }
+
+            firebase.database().ref('library').push({
+                title: title,
+                fileUrl: url
+            }).then(() => {
+                status.innerText = "Kitob muvaffaqiyatli qo'shildi!";
+                document.getElementById('bookTitle').value = '';
+                document.getElementById('bookUrl').value = '';
+            });
+        }
+    </script>
+</body>
+</html>
